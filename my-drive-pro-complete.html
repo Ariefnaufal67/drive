@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Drive - Cloud Storage Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #202124;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .login-logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .login-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .login-features {
+            margin-top: 40px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 16px 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+        }
+
+        .login-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-box h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .login-box p {
+            color: #5f6368;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #5f6368;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .btn-google {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-google:hover {
+            background: #f8f9fa;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 24px;
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        .switch-auth a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .error-message, .success-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c00;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #060;
+        }
+
+        .error-message.show, .success-message.show {
+            display: block;
+        }
+
+        /* App Styles */
+        .app-container {
+            display: none;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .storage-badge {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            padding: 6px 12px;
+            background: #f1f3f4;
+            border-radius: 16px;
+        }
+
+        .sync-status.synced {
+            background: #e6f4ea;
+            color: #1e8e3e;
+        }
+
+        .sync-status.syncing {
+            background: #fef7e0;
+            color: #ea8600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #f1f3f4;
+            border-radius: 24px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: #f1f3f4;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #e0e0e0;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 65px);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(102,126,234,0.3);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102,126,234,0.4);
+        }
+
+        .nav-menu {
+            margin-top: 20px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            color: #5f6368;
+        }
+
+        .nav-item:hover {
+            background: #f1f3f4;
+        }
+
+        .nav-item.active {
+            background: #e8f0fe;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+
+        .storage-info-box {
+            margin-top: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .storage-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .storage-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .storage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .storage-bar {
+            background: rgba(255,255,255,0.2);
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .storage-fill {
+            background: white;
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .storage-mode {
+            display: flex;
+            gap: 8px;
+            background: #f1f3f4;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .mode-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .drop-zone {
+            border: 2px dashed #dadce0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .drop-zone.dragover {
+            border-color: #1a73e8;
+            background: #e8f0fe;
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .file-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .file-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #1a73e8;
+        }
+
+        .file-status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 16px;
+        }
+
+        .file-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: #f1f3f4;
+            border-radius: 8px;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-info {
+            font-size: 12px;
+            color: #5f6368;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .file-actions {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: none;
+            gap: 4px;
+        }
+
+        .file-card:hover .file-actions {
+            display: flex;
+        }
+
+        .action-btn {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f1f3f4;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .spinner {
+            border: 3px solid #f1f3f4;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f1f3f4;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #5f6368;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .files-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div id="loadingText">Memproses...</div>
+            <div class="progress-bar" id="progressBar" style="display: none;">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-left">
+            <div class="login-logo">☁️</div>
+            <h1 class="login-title">My Drive Pro</h1>
+            <p class="login-subtitle">Platform penyimpanan cloud hybrid dengan teknologi dual storage</p>
+            
+            <div class="login-features">
+                <div class="feature-item">
+                    <span class="feature-icon">💾</span>
+                    <div>
+                        <strong>45 GB Total Storage</strong><br>
+                        <small>20 GB Lokal + 25 GB Cloud</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⚡</span>
+                    <div>
+                        <strong>Dual Save System</strong><br>
+                        <small>Auto backup lokal & cloud</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔄</span>
+                    <div>
+                        <strong>Auto Sync</strong><br>
+                        <small>Sync otomatis antar device</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <div>
+                        <strong>Aman & Private</strong><br>
+                        <small>Firebase Authentication</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-box">
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <h2>Selamat Datang!</h2>
+                    <p>Masuk ke akun Anda</p>
+
+                    <div class="error-message" id="loginError"></div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="nama@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Masukkan password">
+                    </div>
+
+                    <button class="btn-primary" onclick="loginWithEmail()">Masuk</button>
+
+                    <div class="divider">atau</div>
+
+                    <button class="btn-google" onclick="loginWithGoogle()">
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                        </svg>
+                        Masuk dengan Google
+                    </button>
+
+                    <div class="switch-auth">
+                        Belum punya akun? <a onclick="showRegisterForm()">Daftar sekarang</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" style="display: none;">
+                    <h2>Buat Akun Baru</h2>
+                    <p>Daftar untuk memulai</p>
+
+                    <div class="error-message" id="registerError"></div>
+                    <div class="success-message" id="registerSuccess"></div>
+                    
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="registerName" placeholder="Nama Anda">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="nama@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Minimal 6 karakter">
+                    </div>
+
+                    <button class="btn-primary" onclick="registerWithEmail()">Daftar</button>
+
+                    <div class="divider">atau</div>
+
+                    <button class="btn-google" onclick="loginWithGoogle()">
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                        </svg>
+                        Daftar dengan Google
+                    </button>
+
+                    <div class="switch-auth">
+                        Sudah punya akun? <a onclick="showLoginForm()">Masuk di sini</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">☁️</div>
+                <span>My Drive Pro</span>
+            </div>
+            <div class="header-right">
+                <div class="storage-badge">
+                    💾 <span id="totalStorage">0 KB / 45 GB</span>
+                </div>
+                <div class="sync-status synced" id="syncStatus">
+                    <span>✅</span>
+                    <span id="syncText">Synced</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-name" id="userName">User</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Keluar</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    <span>📤</span> Upload File
+                </button>
+                <input type="file" id="fileInput" multiple style="display: none;">
+                
+                <div class="nav-menu">
+                    <div class="nav-item active" data-filter="all">
+                        <span>📁</span> Semua File
+                    </div>
+                    <div class="nav-item" data-filter="recent">
+                        <span>🕐</span> Terbaru
+                    </div>
+                    <div class="nav-item" data-filter="images">
+                        <span>🖼️</span> Gambar
+                    </div>
+                    <div class="nav-item" data-filter="documents">
+                        <span>📄</span> Dokumen
+                    </div>
+                    <div class="nav-item" data-filter="cloud">
+                        <span>☁️</span> Cloud Only
+                    </div>
+                    <div class="nav-item" data-filter="local">
+                        <span>💻</span> Local Only
+                    </div>
+                </div>
+
+                <div class="storage-info-box">
+                    <div class="storage-label">Storage Usage</div>
+                    <div class="storage-bars">
+                        <div>
+                            <div class="storage-item">
+                                <span>💻 Local</span>
+                                <span id="localStorageText">0 KB / 20 GB</span>
+                            </div>
+                            <div class="storage-bar">
+                                <div class="storage-fill" id="localStorageFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="storage-item">
+                                <span>☁️ Cloud</span>
+                                <span id="cloudStorageText">0 KB / 25 GB</span>
+                            </div>
+                            <div class="storage-bar">
+                                <div class="storage-fill" id="cloudStorageFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="toolbar">
+                    <h2>Semua File</h2>
+                    <div class="storage-mode">
+                        <button class="mode-btn active" data-mode="dual" onclick="setStorageMode('dual')">
+                            🔄 Dual Save
+                        </button>
+                        <button class="mode-btn" data-mode="local" onclick="setStorageMode('local')">
+                            💻 Local Only
+                        </button>
+                        <button class="mode-btn" data-mode="cloud" onclick="setStorageMode('cloud')">
+                            ☁️ Cloud Only
+                        </button>
+                    </div>
+                </div>
+
+                <div class="drop-zone" id="dropZone">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📤</div>
+                    <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Seret file ke sini untuk upload</div>
+                    <div style="font-size: 14px; color: #5f6368;">Mode: <strong id="modeText">Dual Save (Lokal + Cloud)</strong></div>
+                </div>
+
+                <div class="files-grid" id="filesGrid">
+                    <div class="empty-state">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📂</div>
+                        <div style="font-size: 16px; margin-bottom: 8px;">Belum ada file</div>
+                        <div style="font-size: 14px;">Upload file pertama Anda sekarang!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // ========================================
+        // CONFIGURATION
+        // ========================================
+        
+        // Firebase Config - SUDAH DIISI!
+        const firebaseConfig = {
+            apiKey: "AIzaSyAiPjjP94eds3JVC0MIDrm79V2qhU46kSM",
+            authDomain: "drive-821fb.firebaseapp.com",
+            projectId: "drive-821fb",
+            storageBucket: "drive-821fb.firebasestorage.app",
+            messagingSenderId: "873898013807",
+            appId: "1:873898013807:web:87609ec9d2b4dfe4c3099a"
+        };
+
+        // Cloudinary Config - SUDAH SAYA ISI DARI SCREENSHOT ANDA
+        const CLOUDINARY_CONFIG = {
+            cloudName: 'dzjm6qbij',
+            apiKey: '837788525812616',
+            uploadPreset: 'ml_default' // Anda bisa ganti dengan preset khusus
+        };
+
+        // Storage Limits
+        const MAX_LOCAL_STORAGE = 20 * 1024 * 1024 * 1024; // 20 GB
+        const MAX_CLOUD_STORAGE = 25 * 1024 * 1024 * 1024; // 25 GB
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Global Variables
+        let currentUser = null;
+        let db = null;
+        let files = [];
+        let storageMode = 'dual'; // dual, local, cloud
+        let localStorageUsed = 0;
+        let cloudStorageUsed = 0;
+
+        // ========================================
+        // INDEXEDDB SETUP
+        // ========================================
+        
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('MyDriveProDB', 1);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('files')) {
+                        const store = db.createObjectStore('files', { keyPath: 'id' });
+                        store.createIndex('userId', 'userId', { unique: false });
+                        store.createIndex('uploadDate', 'uploadDate', { unique: false });
+                    }
+                };
+            });
+        }
+
+        // ========================================
+        // AUTH FUNCTIONS
+        // ========================================
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                await initDB();
+                await loadFiles();
+                showApp();
+                updateUserInfo(user);
+                updateStorageInfo();
+            } else {
+                currentUser = null;
+                showLogin();
+            }
+        });
+
+        function showLogin() {
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('appContainer').classList.remove('active');
+        }
+
+        function showApp() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+        }
+
+        function showLoading(text = 'Memproses...') {
+            document.getElementById('loadingText').textContent = text;
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('progressBar').style.display = 'none';
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.display = 'block';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('show');
+            setTimeout(() => element.classList.remove('show'), 5000);
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('show');
+            setTimeout(() => element.classList.remove('show'), 5000);
+        }
+
+        async function loginWithEmail() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showError('loginError', 'Email dan password harus diisi!');
+                return;
+            }
+
+            showLoading('Logging in...');
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                hideLoading();
+                let errorMessage = 'Login gagal!';
+                switch (error.code) {
+                    case 'auth/user-not-found': errorMessage = 'Email tidak terdaftar!'; break;
+                    case 'auth/wrong-password': errorMessage = 'Password salah!'; break;
+                    case 'auth/invalid-email': errorMessage = 'Format email tidak valid!'; break;
+                }
+                showError('loginError', errorMessage);
+            }
+        }
+
+        async function registerWithEmail() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+
+            if (!name || !email || !password) {
+                showError('registerError', 'Semua field harus diisi!');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('registerError', 'Password minimal 6 karakter!');
+                return;
+            }
+
+            showLoading('Creating account...');
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await userCredential.user.updateProfile({ displayName: name });
+                hideLoading();
+                showSuccess('registerSuccess', 'Registrasi berhasil!');
+            } catch (error) {
+                hideLoading();
+                let errorMessage = 'Registrasi gagal!';
+                switch (error.code) {
+                    case 'auth/email-already-in-use': errorMessage = 'Email sudah terdaftar!'; break;
+                    case 'auth/invalid-email': errorMessage = 'Format email tidak valid!'; break;
+                    case 'auth/weak-password': errorMessage = 'Password terlalu lemah!'; break;
+                }
+                showError('registerError', errorMessage);
+            }
+        }
+
+        async function loginWithGoogle() {
+            showLoading('Connecting to Google...');
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                hideLoading();
+                showError('loginError', 'Login dengan Google gagal!');
+            }
+        }
+
+        async function logout() {
+            if (confirm('Yakin ingin keluar?')) {
+                showLoading('Logging out...');
+                await auth.signOut();
+                hideLoading();
+            }
+        }
+
+        function updateUserInfo(user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            document.getElementById('userName').textContent = displayName;
+            
+            const avatar = document.getElementById('userAvatar');
+            if (user.photoURL) {
+                avatar.innerHTML = `<img src="${user.photoURL}" alt="${displayName}">`;
+            } else {
+                avatar.textContent = displayName.charAt(0).toUpperCase();
+            }
+        }
+
+        // ========================================
+        // FILE MANAGEMENT
+        // ========================================
+        
+        async function loadFiles() {
+            if (!db || !currentUser) return;
+            
+            const transaction = db.transaction(['files'], 'readonly');
+            const store = transaction.objectStore('files');
+            const index = store.index('userId');
+            const request = index.getAll(currentUser.uid);
+            
+            request.onsuccess = () => {
+                files = request.result || [];
+                renderFiles();
+                calculateStorageUsage();
+            };
+        }
+
+        async function saveFileToIndexedDB(fileData) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(['files'], 'readwrite');
+                const store = transaction.objectStore('files');
+                const request = store.add(fileData);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function uploadToCloudinary(file, onProgress) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+            formData.append('cloud_name', CLOUDINARY_CONFIG.cloudName);
+            
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        onProgress(percent);
+                    }
+                });
+                
+                xhr.addEventListener('load', () => {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject(new Error('Upload failed'));
+                    }
+                });
+                
+                xhr.addEventListener('error', () => reject(new Error('Upload failed')));
+                
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/auto/upload`);
+                xhr.send(formData);
+            });
+        }
+
+        async function handleFileUpload(files) {
+            if (!files || files.length === 0) return;
+            
+            for (const file of files) {
+                try {
+                    showLoading(`Uploading ${file.name}...`);
+                    
+                    const fileData = {
+                        id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                        userId: currentUser.uid,
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        uploadDate: new Date().toISOString(),
+                        savedTo: []
+                    };
+                    
+                    // Save to IndexedDB (Local)
+                    if (storageMode === 'dual' || storageMode === 'local') {
+                        if (localStorageUsed + file.size <= MAX_LOCAL_STORAGE) {
+                            const reader = new FileReader();
+                            const localData = await new Promise((resolve) => {
+                                reader.onload = (e) => resolve(e.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                            
+                            fileData.localData = localData;
+                            fileData.savedTo.push('local');
+                            await saveFileToIndexedDB(fileData);
+                            localStorageUsed += file.size;
+                        } else {
+                            alert('Local storage penuh!');
+                        }
+                    }
+                    
+                    // Upload to Cloudinary (Cloud)
+                    if (storageMode === 'dual' || storageMode === 'cloud') {
+                        if (cloudStorageUsed + file.size <= MAX_CLOUD_STORAGE) {
+                            const cloudResult = await uploadToCloudinary(file, updateProgress);
+                            fileData.cloudUrl = cloudResult.secure_url;
+                            fileData.cloudPublicId = cloudResult.public_id;
+                            fileData.savedTo.push('cloud');
+                            cloudStorageUsed += file.size;
+                            
+                            // Update IndexedDB with cloud info
+                            if (!fileData.localData) {
+                                await saveFileToIndexedDB(fileData);
+                            }
+                        } else {
+                            alert('Cloud storage penuh!');
+                        }
+                    }
+                    
+                    files.push(fileData);
+                    
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert(`Error uploading ${file.name}: ${error.message}`);
+                }
+            }
+            
+            hideLoading();
+            renderFiles();
+            updateStorageInfo();
+            updateSyncStatus('synced');
+        }
+
+        function renderFiles() {
+            const grid = document.getElementById('filesGrid');
+            grid.innerHTML = '';
+            
+            if (files.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📂</div>
+                        <div style="font-size: 16px; margin-bottom: 8px;">Belum ada file</div>
+                        <div style="font-size: 14px;">Upload file pertama Anda sekarang!</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            files.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'file-card';
+                
+                const statusIcon = file.savedTo.includes('local') && file.savedTo.includes('cloud') ? '🔄' :
+                                  file.savedTo.includes('cloud') ? '☁️' : '💻';
+                
+                const icon = getFileIcon(file.type, file.name);
+                
+                card.innerHTML = `
+                    <div class="file-status" title="${file.savedTo.join(' + ')}">${statusIcon}</div>
+                    <div class="file-icon">${icon}</div>
+                    <div class="file-name" title="${file.name}">${file.name}</div>
+                    <div class="file-info">
+                        <span>${formatFileSize(file.size)}</span>
+                        <span>${file.savedTo.join(' + ')}</span>
+                    </div>
+                    <div class="file-actions">
+                        <button class="action-btn" onclick="downloadFile('${file.id}')">📥</button>
+                        ${file.cloudUrl ? `<button class="action-btn" onclick="shareFile('${file.id}')">🔗</button>` : ''}
+                        <button class="action-btn" onclick="deleteFile('${file.id}')">🗑️</button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function getFileIcon(type, name) {
+            if (type.startsWith('image/')) return '🖼️';
+            if (type.includes('pdf')) return '📕';
+            if (type.includes('video')) return '🎬';
+            if (type.includes('audio')) return '🎵';
+            if (name.endsWith('.zip') || name.endsWith('.rar')) return '📦';
+            if (name.endsWith('.doc') || name.endsWith('.docx')) return '📝';
+            if (name.endsWith('.xls') || name.endsWith('.xlsx')) return '📊';
+            if (name.endsWith('.ppt') || name.endsWith('.pptx')) return '📽️';
+            return '📄';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function calculateStorageUsage() {
+            localStorageUsed = files.reduce((sum, f) => sum + (f.localData ? f.size : 0), 0);
+            cloudStorageUsed = files.reduce((sum, f) => sum + (f.cloudUrl ? f.size : 0), 0);
+        }
+
+        function updateStorageInfo() {
+            const totalUsed = Math.max(localStorageUsed, cloudStorageUsed);
+            const totalMax = MAX_LOCAL_STORAGE + MAX_CLOUD_STORAGE;
+            
+            document.getElementById('totalStorage').textContent = 
+                `${formatFileSize(totalUsed)} / 45 GB`;
+            
+            document.getElementById('localStorageText').textContent = 
+                `${formatFileSize(localStorageUsed)} / 20 GB`;
+            document.getElementById('localStorageFill').style.width = 
+                `${(localStorageUsed / MAX_LOCAL_STORAGE) * 100}%`;
+            
+            document.getElementById('cloudStorageText').textContent = 
+                `${formatFileSize(cloudStorageUsed)} / 25 GB`;
+            document.getElementById('cloudStorageFill').style.width = 
+                `${(cloudStorageUsed / MAX_CLOUD_STORAGE) * 100}%`;
+        }
+
+        function updateSyncStatus(status) {
+            const statusEl = document.getElementById('syncStatus');
+            const textEl = document.getElementById('syncText');
+            
+            statusEl.className = 'sync-status';
+            
+            if (status === 'synced') {
+                statusEl.classList.add('synced');
+                statusEl.innerHTML = '<span>✅</span><span>Synced</span>';
+            } else if (status === 'syncing') {
+                statusEl.classList.add('syncing');
+                statusEl.innerHTML = '<span>🔄</span><span>Syncing...</span>';
+            }
+        }
+
+        function setStorageMode(mode) {
+            storageMode = mode;
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+            
+            const modeText = document.getElementById('modeText');
+            if (mode === 'dual') {
+                modeText.textContent = 'Dual Save (Lokal + Cloud)';
+            } else if (mode === 'local') {
+                modeText.textContent = 'Local Only';
+            } else {
+                modeText.textContent = 'Cloud Only';
+            }
+        }
+
+        async function downloadFile(fileId) {
+            const file = files.find(f => f.id === fileId);
+            if (!file) return;
+            
+            const a = document.createElement('a');
+            
+            if (file.localData) {
+                a.href = file.localData;
+            } else if (file.cloudUrl) {
+                a.href = file.cloudUrl;
+            }
+            
+            a.download = file.name;
+            a.click();
+        }
+
+        function shareFile(fileId) {
+            const file = files.find(f => f.id === fileId);
+            if (!file || !file.cloudUrl) return;
+            
+            navigator.clipboard.writeText(file.cloudUrl);
+            alert('Link copied to clipboard!\n\n' + file.cloudUrl);
+        }
+
+        async function deleteFile(fileId) {
+            if (!confirm('Hapus file ini?')) return;
+            
+            const fileIndex = files.findIndex(f => f.id === fileId);
+            if (fileIndex === -1) return;
+            
+            const file = files[fileIndex];
+            
+            // Delete from IndexedDB
+            const transaction = db.transaction(['files'], 'readwrite');
+            const store = transaction.objectStore('files');
+            await store.delete(fileId);
+            
+            // TODO: Delete from Cloudinary (requires backend for security)
+            // For now, we just remove the reference
+            
+            files.splice(fileIndex, 1);
+            renderFiles();
+            calculateStorageUsage();
+            updateStorageInfo();
+        }
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFileUpload(e.target.files);
+            e.target.value = '';
+        });
+
+        const dropZone = document.getElementById('dropZone');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFileUpload(e.dataTransfer.files);
+        });
+
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+                
+                if (loginForm.style.display !== 'none') {
+                    loginWithEmail();
+                } else if (registerForm.style.display !== 'none') {
+                    registerWithEmail();
+                }
+            }
+        });
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                // TODO: Implement filtering
+                renderFiles();
+            });
+        });
+    </script>
+</body>
+</html>
