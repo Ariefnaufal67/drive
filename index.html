@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Drive Pro - Cloud Storage</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div id="loadingText">Memproses...</div>
+            <div class="progress-bar" id="progressBar" style="display: none;">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-left">
+            <div class="login-logo">☁️</div>
+            <h1 class="login-title">My Drive Pro</h1>
+            <p class="login-subtitle">Platform penyimpanan cloud hybrid dengan teknologi dual storage</p>
+            
+            <div class="login-features">
+                <div class="feature-item">
+                    <span class="feature-icon">💾</span>
+                    <div>
+                        <strong>45 GB Total Storage</strong><br>
+                        <small>20 GB Lokal + 25 GB Cloud</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⚡</span>
+                    <div>
+                        <strong>Dual Save System</strong><br>
+                        <small>Auto backup lokal & cloud</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔄</span>
+                    <div>
+                        <strong>Auto Sync</strong><br>
+                        <small>Sync otomatis antar device</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <div>
+                        <strong>Aman & Private</strong><br>
+                        <small>Firebase Authentication</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-box">
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <h2>Selamat Datang!</h2>
+                    <p>Masuk ke akun Anda</p>
+
+                    <div class="error-message" id="loginError"></div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="nama@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Masukkan password">
+                    </div>
+
+                    <button class="btn-primary" onclick="loginWithEmail()">Masuk</button>
+
+                    <div class="divider">atau</div>
+
+                    <button class="btn-google" onclick="loginWithGoogle()">
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                        </svg>
+                        Masuk dengan Google
+                    </button>
+
+                    <div class="switch-auth">
+                        Belum punya akun? <a onclick="showRegisterForm()">Daftar sekarang</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" style="display: none;">
+                    <h2>Buat Akun Baru</h2>
+                    <p>Daftar untuk memulai</p>
+
+                    <div class="error-message" id="registerError"></div>
+                    <div class="success-message" id="registerSuccess"></div>
+                    
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="registerName" placeholder="Nama Anda">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="nama@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Minimal 6 karakter">
+                    </div>
+
+                    <button class="btn-primary" onclick="registerWithEmail()">Daftar</button>
+
+                    <div class="divider">atau</div>
+
+                    <button class="btn-google" onclick="loginWithGoogle()">
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                        </svg>
+                        Daftar dengan Google
+                    </button>
+
+                    <div class="switch-auth">
+                        Sudah punya akun? <a onclick="showLoginForm()">Masuk di sini</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">☁️</div>
+                <span>My Drive Pro</span>
+            </div>
+            <div class="header-right">
+                <div class="storage-badge">
+                    💾 <span id="totalStorage">0 KB / 45 GB</span>
+                </div>
+                <div class="sync-status synced" id="syncStatus">
+                    <span>✅</span>
+                    <span id="syncText">Synced</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-name" id="userName">User</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">Keluar</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    <span>📤</span> Upload File
+                </button>
+                <input type="file" id="fileInput" multiple style="display: none;">
+                
+                <div class="nav-menu">
+                    <div class="nav-item active" data-filter="all">
+                        <span>📁</span> Semua File
+                    </div>
+                    <div class="nav-item" data-filter="recent">
+                        <span>🕐</span> Terbaru
+                    </div>
+                    <div class="nav-item" data-filter="images">
+                        <span>🖼️</span> Gambar
+                    </div>
+                    <div class="nav-item" data-filter="documents">
+                        <span>📄</span> Dokumen
+                    </div>
+                    <div class="nav-item" data-filter="cloud">
+                        <span>☁️</span> Cloud Only
+                    </div>
+                    <div class="nav-item" data-filter="local">
+                        <span>💻</span> Local Only
+                    </div>
+                </div>
+
+                <div class="storage-info-box">
+                    <div class="storage-label">Storage Usage</div>
+                    <div class="storage-bars">
+                        <div>
+                            <div class="storage-item">
+                                <span>💻 Local</span>
+                                <span id="localStorageText">0 KB / 20 GB</span>
+                            </div>
+                            <div class="storage-bar">
+                                <div class="storage-fill" id="localStorageFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="storage-item">
+                                <span>☁️ Cloud</span>
+                                <span id="cloudStorageText">0 KB / 25 GB</span>
+                            </div>
+                            <div class="storage-bar">
+                                <div class="storage-fill" id="cloudStorageFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="toolbar">
+                    <h2>Semua File</h2>
+                    <div class="storage-mode">
+                        <button class="mode-btn active" data-mode="dual" onclick="setStorageMode('dual')">
+                            🔄 Dual Save
+                        </button>
+                        <button class="mode-btn" data-mode="local" onclick="setStorageMode('local')">
+                            💻 Local Only
+                        </button>
+                        <button class="mode-btn" data-mode="cloud" onclick="setStorageMode('cloud')">
+                            ☁️ Cloud Only
+                        </button>
+                    </div>
+                </div>
+
+                <div class="drop-zone" id="dropZone">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📤</div>
+                    <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">Seret file ke sini untuk upload</div>
+                    <div style="font-size: 14px; color: #5f6368;">Mode: <strong id="modeText">Dual Save (Lokal + Cloud)</strong></div>
+                </div>
+
+                <div class="files-grid" id="filesGrid">
+                    <div class="empty-state">
+                        <div style="font-size: 64px; margin-bottom: 16px;">📂</div>
+                        <div style="font-size: 16px; margin-bottom: 8px;">Belum ada file</div>
+                        <div style="font-size: 14px;">Upload file pertama Anda sekarang!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <!-- JavaScript Files (ORDER MATTERS!) -->
+    <script src="js/config.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <!-- Initialize App -->
+    <script>
+        // Initialize Firebase when page loads
+        initializeFirebase();
+    </script>
+</body>
+</html>
